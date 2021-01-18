@@ -2,6 +2,8 @@ package hello.core.scope;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
 
@@ -24,8 +26,24 @@ public class PrototypeTest {
     }
 
 
+    @Scope("singleton")
+    static class Client {
+
+        @Autowired
+        private ObjectProvider<PrototypeBean> prototypeBeans;
+
+        public int logic() {
+            PrototypeBean prototypeBean = prototypeBeans.getObject();
+            prototypeBean.addCount();
+            return prototypeBean.getCount();
+        }
+    }
+
+
     @Scope("prototype")
     static class PrototypeBean {
+
+        private int count = 0;
 
         @PostConstruct
         public void init() {
@@ -35,6 +53,14 @@ public class PrototypeTest {
         @PreDestroy
         public void destroy() {
             System.out.println("PrototypeBean.destroy");
+        }
+
+        public void addCount() {
+            count++;
+        }
+
+        public int getCount() {
+            return count;
         }
     }
 }
