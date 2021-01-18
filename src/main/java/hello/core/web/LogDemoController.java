@@ -20,7 +20,7 @@ public class LogDemoController {
     @ResponseBody
     public String logDemo(HttpServletRequest request) {
         MyLogger myLogger = myLoggerObjectProvider.getObject();
-        String requestURL = request.getRequestURI();
+        String requestURL = request.getRequestURL().toString();
         myLogger.setRequestURL(requestURL);
 
         myLogger.log("controller test");
